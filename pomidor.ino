@@ -163,6 +163,15 @@ void finishBreak() {
   playMinorTriad();
 }
 
+int readFloatyLine(int pin) {
+  for(int i = 0; i < 10; i++) {
+    if (digitalRead(pin) == LOW) return LOW;
+    delay(10);
+  }
+
+  return HIGH;
+}
+
 void setup() {
   pinMode(LED_PIN, OUTPUT);
   pinMode(SPK_PIN, OUTPUT);
@@ -179,19 +188,19 @@ void setup() {
   lcd.createChar(0, TIME_CHAR);
   delay(250); // wait for lines to settle
 
-  if(digitalRead(PML_PIN) == LOW) {
+  if(readFloatyLine(PML_PIN) == LOW) {
     POMODORO = LOW_POMODORO;
   } else {
     POMODORO = HIG_POMODORO;
   }
 
-  if(digitalRead(SBL_PIN) == LOW) {
+  if(readFloatyLine(SBL_PIN) == LOW) {
     SHORT_BREAK = LOW_SHORT_BREAK;
   } else {
     SHORT_BREAK = HIG_SHORT_BREAK;
   }
 
-  if(digitalRead(LBL_PIN) == LOW) {
+  if(readFloatyLine(LBL_PIN) == LOW) {
     LONG_BREAK = LOW_LONG_BREAK;
   } else {
     LONG_BREAK = HIG_LONG_BREAK;
