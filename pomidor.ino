@@ -163,6 +163,10 @@ void finishBreak() {
   playMinorTriad();
 }
 
+// This is due to a bug in the design of the board,
+// in which the lines from the DIP switch can float high
+// when they should be low because of no grounding.
+// Yes. Facepalm. I'm not re-ordering the board.
 int readFloatyLine(int pin) {
   for(int i = 0; i < 10; i++) {
     if (digitalRead(pin) == LOW) return LOW;
