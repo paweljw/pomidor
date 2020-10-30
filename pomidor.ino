@@ -21,12 +21,32 @@ int state = STATE_INI;
 bool ledRising = false;
 bool breakNext = false;
 
+int buttonState = HIGH;
+int prevButtonState = HIGH;
+bool buttonPressed = false;
+
 void setLed(int val) {
   analogWrite(LED_PIN, val);
 }
 
-void playNote(int length) {
-  tone(SPK_PIN, 440, length);
+void playBeep() {
+  tone(SPK_PIN, 440, 100);
+}
+
+void playMajorTriad() {
+  tone(SPK_PIN, 349, 250); // F
+  delay(250);
+  tone(SPK_PIN, 440, 250); // A
+  delay(250);
+  tone(SPK_PIN, 523, 500); // C'
+}
+
+void playMinorTriad() {
+  tone(SPK_PIN, 349, 250); // F
+  delay(250);
+  tone(SPK_PIN, 415, 250); // Ab
+  delay(250);
+  tone(SPK_PIN, 523, 500); // C'
 }
 
 void processLedTick() {
@@ -42,8 +62,22 @@ void processLedTick() {
   if(ledBrightness == 255) ledRising = false;
 }
 
+void updateButton() {
+  prevButtonState = buttonState;
+  buttonState = digitalRead(BTN_PIN);
+
+  if (buttonState != prevButtonState && buttonState == LOW) {
+    buttonPressed = true;
+  }
+}
+
 bool isButtonPressed() {
-  return digitalRead(BTN_PIN) == LOW;
+  if (buttonPressed) {
+    buttonPressed = false;
+    return true;
+  }
+
+  return false;
 }
 
 void printSeconds() {
@@ -93,7 +127,6 @@ void resumePomodoro() {
 }
 
 void finishPomodoro() {
-  playNote(1000);
   lcd.backlight();
   state = STATE_WAI;
   donePomodoros += 1;
@@ -103,6 +136,7 @@ void finishPomodoro() {
   lcd.print(S_SEP);
   lcd.print(POMODOROS_TO_LONG_BREAK);
   breakNext = true;
+  playMajorTriad();
 }
 
 void startBreak(int length) {
@@ -119,12 +153,12 @@ void startBreak(int length) {
 void finishBreak() {
   state = STATE_WAI;
   lcd.backlight();
-  playNote(1000);
   lcd.clear();
   lcd.print(S_FOCUS_TIME);
   if(donePomodoros == POMODOROS_TO_LONG_BREAK) {
     donePomodoros = 0;
   }
+  playMinorTriad();
 }
 
 void setup() {
@@ -171,12 +205,13 @@ void setup() {
 
 // the loop routine runs over and over again forever:
 void loop() {
+  updateButton();
+ 
   switch(state) {
     case STATE_INI:
       if(isButtonPressed()) {
         runPomodoro();
-        playNote(100);
-        delay(250);
+        playBeep();
         break;
       }
       break;
@@ -184,10 +219,10 @@ void loop() {
       printSeconds();
       for(int i = 0; i < 10; i++) {
         processLedTick();
+        updateButton();
         if(isButtonPressed()) {
           pausePomodoro();
-          playNote(100);
-          delay(250);
+          playBeep();
           break;
         }
         delay(100);
@@ -215,7 +250,7 @@ void loop() {
       setLed(255);
 
       if(isButtonPressed()) {
-        playNote(100);
+        playBeep();
         if(breakNext) {
           if(donePomodoros == POMODOROS_TO_LONG_BREAK) {
             startBreak(LONG_BREAK);
@@ -225,16 +260,15 @@ void loop() {
         } else {
           runPomodoro();
         }
-        delay(250);
         break;
       }
       break;
     case STATE_PSE:
       setLed(255);
+      lcd.backlight();
       if(isButtonPressed()) {
-        playNote(100);
+        playBeep();
         resumePomodoro();
-        delay(250);
         break;
       }
       break;
