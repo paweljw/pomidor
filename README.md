@@ -1,8 +1,17 @@
-# pomidor
+# pomidor v2.0
 
 Software for a hardware Pomodoro timer, built on ATmega328p and assorted cruft I amassed over the years.
 
 The joke is "pomidor" means "tomato" in Polish.
+
+## Features
+
+* Variable pomodoro length (25/50min)
+* Variable short break length (5/10min)
+* Variable long break length (15/30min)
+* Audible cue on pomodoro end/break end
+* Visual cue on pomodoro end (LCD backlight sleeps after 5s of inactivity, wakes up for break)
+* Customization as easy as modifying `config.h`
 
 ## Usage
 
@@ -16,15 +25,20 @@ make ispload
 
 ## Board schematic
 
-![Board schematic](schematic.png)
+![Board schematic](img/schematic.png)
 
-This will also serve as a full devboard (I want this gadget to be reprogrammable, so I included a full ISP header in the design). H1 will accept a HD44780-compatible LCD with an I2C expander pack, and H2 produces a split ground, LED control and sense pin for an arcade-style button. **I have not yet validated the design on a produced PCB, stay tuned.**
+### Board features
 
-This also makes the design reasonably open - conceivably, this board can be used for any LCD+arcadebutton+piezo speaker project, which is quite a wide range of applications. The arcadebutton portion can be split into a microswitch + LED combo thanks to the split ground on H2.
+* USB-B power plug
+* Power stabilization (5v)
+* Physical sound and power switches - no software trickery, as it should be
+* DIP switches for end-user configuration (well, not _really_ end user, but it's better than having to reprogram the chip for it every time)
 
-Adding female breakout headers to this project should also be reasonably easy, but I don't need one and it's a ton of very boring wiring, so feel free to augment the design yourself ;)
+## Possible board outline
 
-In terms of possible improvements: I ran out of time for diodes. I used this as a devboard successfully, but I assume that if I tried to power both the barrel plug and plug my ISP into a laptop, I may be out an USB port, an ISP, an atmega328, and if everything goes wrong - a laptop. You were warned.
+![Board outline](img/board.png)
+
+The schematic is verified now and I have manufactured a from this circuit. Idea for this outline is to expose the USB plug and switches off the side, where they can be incorporated into a case neatly.
 
 ## Credits
 
