@@ -1,4 +1,5 @@
 #include "config.h"
+#include "locale.h"
 #include <Wire.h>
 #include <hd44780.h>                       // main hd44780 header
 #include <hd44780ioClass/hd44780_I2Cexp.h> // i2c expander i/o class header
@@ -23,7 +24,7 @@ void setLed(int val) {
   analogWrite(LED_PIN, val);
 }
 
-void brap(int length) {
+void playNote(int length) {
   tone(SPK_PIN, 440, length);
 }
 
@@ -57,49 +58,46 @@ void printSeconds() {
   lcd.print(seconds % 60);
 }
 
+void printPomodoro() {
+  lcd.backlight();
+  lcd.clear();
+  lcd.print(S_POMODORO);
+  lcd.print(donePomodoros + 1);
+  lcd.print(S_SEP);
+  lcd.print(POMODOROS_TO_LONG_BREAK);
+  printSeconds();
+}
+
 void runPomodoro() {
   countingDownFrom = POMODORO;
   seconds = POMODORO;
   state = STATE_RUN;
-
-  lcd.clear();
-  lcd.backlight();
-  lcd.print("Pomodoro ");
-  lcd.print(donePomodoros + 1);
-  lcd.print("/");
-  lcd.print(POMODOROS_TO_LONG_BREAK);
-  printSeconds();
+  printPomodoro();
 }
 
 void pausePomodoro() {
   state = STATE_PSE;
   lcd.backlight();
   lcd.clear();
-  lcd.print("Paused...");
+  lcd.print(S_PAUSED);
   printSeconds();
 }
 
 void resumePomodoro() {
   state = STATE_RUN;
   countingDownFrom = seconds;
-  lcd.backlight();
-  lcd.clear();
-  lcd.print("Pomodoro ");
-  lcd.print(donePomodoros + 1);
-  lcd.print("/");
-  lcd.print(POMODOROS_TO_LONG_BREAK);
-  printSeconds();
+  printPomodoro();
 }
 
 void finishPomodoro() {
-  brap(1000);
+  playNote(1000);
   lcd.backlight();
   state = STATE_WAI;
   donePomodoros += 1;
   lcd.clear();
-  lcd.print("Done! ");
+  lcd.print(S_DONE);
   lcd.print(donePomodoros);
-  lcd.print("/");
+  lcd.print(S_SEP);
   lcd.print(POMODOROS_TO_LONG_BREAK);
   breakNext = true;
 }
@@ -110,7 +108,7 @@ void startBreak(int length) {
   countingDownFrom = length;
   seconds = length;
   lcd.clear();
-  lcd.print("Break time!");
+  lcd.print(S_BREAK_TIME);
   printSeconds();
   state = STATE_BRK;
 }
@@ -118,9 +116,9 @@ void startBreak(int length) {
 void finishBreak() {
   state = STATE_WAI;
   lcd.backlight();
-  brap(1000);
+  playNote(1000);
   lcd.clear();
-  lcd.print("Focus, darn ya!");
+  lcd.print(S_FOCUS_TIME);
   if(donePomodoros == POMODOROS_TO_LONG_BREAK) {
     donePomodoros = 0;
   }
@@ -138,7 +136,7 @@ void setup() {
 	status = lcd.begin(LCD_COLS, LCD_ROWS);
 	if(status) hd44780::fatalError(status);
 
-  lcd.print("Initializing...");
+  lcd.print(S_INITIALIZING);
   delay(250); // wait for lines to settle
 
   if(digitalRead(PML_PIN) == LOW) {
@@ -161,7 +159,7 @@ void setup() {
 
   lcd.clear();
   setLed(ledBrightness);
-  lcd.print("Press to start");
+  lcd.print(S_PRESS_TO_START);
 }
 
 // the loop routine runs over and over again forever:
@@ -170,7 +168,7 @@ void loop() {
     case STATE_INI:
       if(isButtonPressed()) {
         runPomodoro();
-        brap(100);
+        playNote(100);
         delay(250);
         break;
       }
@@ -181,7 +179,7 @@ void loop() {
         processLedTick();
         if(isButtonPressed()) {
           pausePomodoro();
-          brap(100);
+          playNote(100);
           delay(250);
           break;
         }
@@ -210,7 +208,7 @@ void loop() {
       setLed(255);
 
       if(isButtonPressed()) {
-        brap(100);
+        playNote(100);
         if(breakNext) {
           if(donePomodoros == POMODOROS_TO_LONG_BREAK) {
             startBreak(LONG_BREAK);
@@ -227,7 +225,7 @@ void loop() {
     case STATE_PSE:
       setLed(255);
       if(isButtonPressed()) {
-        brap(100);
+        playNote(100);
         resumePomodoro();
         delay(250);
         break;
