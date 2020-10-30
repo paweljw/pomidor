@@ -1,39 +1,22 @@
+#include "config.h"
 #include <Wire.h>
 #include <hd44780.h>                       // main hd44780 header
 #include <hd44780ioClass/hd44780_I2Cexp.h> // i2c expander i/o class header
 
 hd44780_I2Cexp lcd;
 
-// === PINS
-const int BTN_PIN = 3;
-const int LED_PIN = 9;
-const int SPK_PIN = 10;
-
-// === LCD
-const int LCD_COLS = 16;
-const int LCD_ROWS = 2;
-
-// === OTHER CONSTANTS
-const int MINUTE = 60;
-const int POMODORO = 25 * MINUTE;
-const int SHORT_BREAK = 5 * MINUTE;
-const int LONG_BREAK = 15 * MINUTE;
-const int POMODOROS_TO_LONG_BREAK = 4;
-
-// === STATES
-const int STATE_INI = 0;
-const int STATE_RUN = 2;
-const int STATE_WAI = 4;
-const int STATE_PSE = 8;
-const int STATE_BRK = 16;
-
 // === GLOBAL VARIABLES
+int POMODORO;
+int SHORT_BREAK;
+int LONG_BREAK;
+
 int countingDownFrom = 0;
 int seconds = 0;
 int donePomodoros = 0;
 int ledBrightness = 255;
-bool ledRising = false;
 int state = STATE_INI;
+
+bool ledRising = false;
 bool breakNext = false;
 
 void setLed(int val) {
@@ -147,12 +130,36 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
   pinMode(SPK_PIN, OUTPUT);
   pinMode(BTN_PIN, INPUT);
+  pinMode(PML_PIN, INPUT);
+  pinMode(SBL_PIN, INPUT);
+  pinMode(LBL_PIN, INPUT);
 
   int status;
 	status = lcd.begin(LCD_COLS, LCD_ROWS);
 	if(status) hd44780::fatalError(status);
 
+  lcd.print("Initializing...");
+  delay(250); // wait for lines to settle
 
+  if(digitalRead(PML_PIN) == LOW) {
+    POMODORO = LOW_POMODORO;
+  } else {
+    POMODORO = HIG_POMODORO;
+  }
+
+  if(digitalRead(SBL_PIN) == LOW) {
+    SHORT_BREAK = LOW_SHORT_BREAK;
+  } else {
+    SHORT_BREAK = HIG_SHORT_BREAK;
+  }
+
+  if(digitalRead(LBL_PIN) == LOW) {
+    LONG_BREAK = LOW_LONG_BREAK;
+  } else {
+    LONG_BREAK = HIG_LONG_BREAK;
+  }
+
+  lcd.clear();
   setLed(ledBrightness);
   lcd.print("Press to start");
 }
