@@ -1,5 +1,6 @@
 #include "config.h"
 #include "locale.h"
+#include "font.h"
 #include <Wire.h>
 #include <hd44780.h>                       // main hd44780 header
 #include <hd44780ioClass/hd44780_I2Cexp.h> // i2c expander i/o class header
@@ -47,6 +48,8 @@ bool isButtonPressed() {
 
 void printSeconds() {
   lcd.setCursor(0, 1);
+  lcd.print(S_SEC_PRE);
+  lcd.write(0);
   if(seconds < 600) {
     lcd.print("0");
   }
@@ -137,6 +140,7 @@ void setup() {
 	if(status) hd44780::fatalError(status);
 
   lcd.print(S_INITIALIZING);
+  lcd.createChar(0, TIME_CHAR);
   delay(250); // wait for lines to settle
 
   if(digitalRead(PML_PIN) == LOW) {
@@ -157,8 +161,11 @@ void setup() {
     LONG_BREAK = HIG_LONG_BREAK;
   }
 
-  lcd.clear();
   setLed(ledBrightness);
+
+  lcd.clear();
+  lcd.print(S_BANNER);
+  lcd.setCursor(0, 1);
   lcd.print(S_PRESS_TO_START);
 }
 
