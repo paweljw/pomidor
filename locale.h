@@ -1,7 +1,7 @@
 #ifndef __LOCALE_H_
 #define __LOCALE_H_
 
-#define S_INITIALIZING "-- init --"
+#define S_INITIALIZING "   -- init --"
 #define S_BANNER "  Pomidor v2.0"
 #define S_PRESS_TO_START "  focus, buddy"
 #define S_POMODORO "  Pomodoro "

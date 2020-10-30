@@ -186,7 +186,6 @@ void setup() {
 
   lcd.print(S_INITIALIZING);
   lcd.createChar(0, TIME_CHAR);
-  delay(250); // wait for lines to settle
 
   if(readFloatyLine(PML_PIN) == LOW) {
     POMODORO = LOW_POMODORO;
