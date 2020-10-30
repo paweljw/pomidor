@@ -15,13 +15,26 @@ The joke is "pomidor" means "tomato" in Polish.
 
 ## Usage
 
-Assuming you have your avrispmkII attached to your ATmega328p breakout/dev board that you handwired yourself in _exactly_ the same way I did:
+Assuming:
+
+* you have an ATmega328p with an Arduino bootloader
+* you're using and `AVRispMkII` programmer
+
+it's as easy as:
 
 ```
 git submodule init
 git submodule sync
 make ispload
 ```
+
+Otherwise please refer to manufacturer/search engine of choice for using it with Arduino and update `Makefile` as required.
+
+I haven't verified this with any other Atmel chips. I don't see a reason it wouldn't work if you can compile and upload the sketch, and that your chip has enough pins.
+
+ATmega328 is an absolute chonker in terms of I/O, so many things in this design are taking advantage of it - it can probably be simplified for a smaller footprint chip with enough shift registers and other assorted stuff.
+
+Please also note that while I'm happy to help if you want to try it, for legal reasons this repository is presented as-is.
 
 ## Board schematic
 
