@@ -1,6 +1,8 @@
 #include "config.h"
 #include "locale.h"
 #include "font.h"
+#include "music.h"
+
 #include <Wire.h>
 #include <hd44780.h>                       // main hd44780 header
 #include <hd44780ioClass/hd44780_I2Cexp.h> // i2c expander i/o class header
@@ -34,19 +36,19 @@ void playBeep() {
 }
 
 void playMajorTriad() {
-  tone(SPK_PIN, 349, 250); // F
+  tone(SPK_PIN, NOTE_F, 250);
   delay(250);
-  tone(SPK_PIN, 440, 250); // A
+  tone(SPK_PIN, NOTE_A, 250);
   delay(250);
-  tone(SPK_PIN, 523, 500); // C'
+  tone(SPK_PIN, NOTE_C, 500);
 }
 
 void playMinorTriad() {
-  tone(SPK_PIN, 349, 250); // F
+  tone(SPK_PIN, NOTE_F, 250);
   delay(250);
-  tone(SPK_PIN, 415, 250); // Ab
+  tone(SPK_PIN, NOTE_AB, 250);
   delay(250);
-  tone(SPK_PIN, 523, 500); // C'
+  tone(SPK_PIN, NOTE_C, 500);
 }
 
 void processLedTick() {
