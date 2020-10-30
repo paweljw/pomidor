@@ -40,6 +40,8 @@ make ispload
 
 The schematic is verified now and I have manufactured a from this circuit. Idea for this outline is to expose the USB plug and switches off the side, where they can be incorporated into a case neatly.
 
+An example Bill of Materials is available in [bom.csv](bom.csv).
+
 ## Credits
 
 * hd44780 library from https://github.com/duinoWitchery/hd44780
