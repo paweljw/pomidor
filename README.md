@@ -38,7 +38,9 @@ make ispload
 
 ![Board outline](img/board.png)
 
-The schematic is verified now and I have manufactured a from this circuit. Idea for this outline is to expose the USB plug and switches off the side, where they can be incorporated into a case neatly.
+The schematic is verified now and I have manufactured a board from this circuit which audited correctly.
+
+Idea for this outline is to expose the USB plug and switches off the side, where they can be incorporated into a case neatly.
 
 An example Bill of Materials is available in [bom.csv](bom.csv).
 
